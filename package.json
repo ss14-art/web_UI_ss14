@@ -1,0 +1,28 @@
+{
+  "name": "nova-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --mode production"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.1.1",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^24.3.0",
+    "svelte": "^5.38.1",
+    "tsx": "^4.16.2",
+    "typescript": "~5.8.3",
+    "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
+    "autoprefixer": "^10.4.20",
+    "clsx": "^2.1.1",
+    "lucide-svelte": "^0.447.0",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^4.1.12",
+    "terser": "^5.43.1"
+  }
+}
