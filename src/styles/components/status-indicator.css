@@ -1,0 +1,26 @@
+.status-badge {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-terminal, monospace), monospace;
+    letter-spacing: 0;
+    animation: pulse 2s ease-in-out infinite;
+    vertical-align: baseline;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.status-badge.error {
+    color: var(--color-danger);
+}
+
+.status-badge.warning {
+    color: var(--color-warning);
+}
+
+.status-badge.active {
+    color: var(--color-success);
+}
+
+.status-badge.inactive {
+    color: var(--color-border);
+}
