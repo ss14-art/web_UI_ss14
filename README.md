@@ -18,10 +18,48 @@
 ## Быстрый старт
 
 ```bash
-npm install
+npm ci
 npm run dev      # http://localhost:5173/
 npm run build    # Production в ../Resources/dist
 ```
+
+## Интеграция с игровым клиентом
+
+Production-сборка обязательна перед запуском клиента: игра не подключается к Vite dev-серверу, а открывает собранные страницы из `Resources/dist` через внутренний `http://webui.local/` origin.
+
+Например, Escape Menu загружается по адресу:
+
+```text
+http://webui.local/dist/src/interfaces/escape-menu/index.html
+```
+
+Перехватчик запросов на стороне C# (`NovaWebViewBridge`) перехватывает любой `http://webui.local/...` и раздаёт соответствующие файлы из `Resources/dist`. Мост NovaBridge использует `http://webui.local/__bridge__/...` для отправки событий в нативный хост.
+
+После изменения файлов в `src/interfaces/` повторно запустите `npm run build`. Каталог `Resources/dist` является генерируемым результатом и не хранится в этом сабмодуле.
+
+## Локальная разработка с игровым клиентом
+
+Перед запуском `runclient*.bat` / `runclient*.sh` обязательно:
+
+1. Собрать production bundle WebUI:
+   ```bash
+   npm ci
+   npm run build
+   ```
+2. Пересобрать клиент (`dotnet run --project Content.Client ...`), чтобы MSBuild скопировал `cef_resources` и `Robust.Client.WebView.exe` рядом с `Robust.Client.WebView.dll` в `bin/Content.Client/`.
+
+После этого CEF сможет найти `cef_resources` и запустить браузерный subprocess.
+
+### Частые ошибки
+
+- **`Unable to locate cef_resources directory!`** — CEF-ресурсы не найдены рядом с `Robust.Client.WebView.dll`. Пересоберите клиент; убедитесь, что в `bin/Content.Client/cef_resources/` есть каталог `locales`.
+- **Escape menu не открывается / белый экран** — проверьте, что `Resources/dist/src/interfaces/escape-menu/index.html` существует после `npm run build`.
+- **`Network service crashed, restarting service.` на некоторых GPU/Windows** — в текущей версии CEF (131) встречается краш сетевого сервиса при мультипроцессном режиме. Временное обходное решение — запускать клиент с флагом `--single-process`:
+  ```bash
+  dotnet run --project Content.Client -- --single-process
+  # или
+  bin/Content.Client/Content.Client.exe --single-process
+  ```
 
 ## Лицензия
 

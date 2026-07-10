@@ -19,6 +19,9 @@ export default defineConfig(async (): Promise<UserConfig> => {
             svelte(),
             {
                 name: 'show-routes',
+                transformIndexHtml(html: string) {
+                    return html.replaceAll(' crossorigin', '');
+                },
                 configureServer(server: ViteDevServer) {
                     server.middlewares.use((req, res, next) => {
                         if (req.url === '/api/interfaces') {

@@ -270,7 +270,7 @@ class NovaBridge {
     }
 
     private buildProtocolUrl(eventType: string, requestId: string, data: string): string {
-        return `ev://${eventType}?requestId=${encodeURIComponent(requestId)}&data=${encodeURIComponent(data)}`;
+        return `http://webui.local/__bridge__/${eventType}?requestId=${encodeURIComponent(requestId)}&data=${encodeURIComponent(data)}`;
     }
 
     private sendRequest(url: string): void {
