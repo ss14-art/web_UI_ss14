@@ -41,12 +41,19 @@ http://webui.local/dist/src/interfaces/escape-menu/index.html
 
 Перед запуском `runclient*.bat` / `runclient*.sh` обязательно:
 
-1. Собрать production bundle WebUI:
+1. Собрать production bundle WebUI. По умолчанию MSBuild делает это автоматически при сборке `Content.Client` через цель `BuildWebUI`, если в `WebUI/package.json` есть зависимости. Если npm недоступен или нужно отключить авто-сборку, передайте `/p:BuildWebUI=false`:
    ```bash
+   dotnet build Content.Client/Content.Client.csproj --configuration Tools
+   # или с отключенным авто-сборщиком
+   dotnet build Content.Client/Content.Client.csproj --configuration Tools /p:BuildWebUI=false
+   ```
+   При ручной сборке:
+   ```bash
+   cd WebUI
    npm ci
    npm run build
    ```
-2. Пересобрать клиент (`dotnet run --project Content.Client ...`), чтобы MSBuild скопировал `cef_resources` и `Robust.Client.WebView.exe` рядом с `Robust.Client.WebView.dll` в `bin/Content.Client/`.
+2. Пересобрать клиент, чтобы MSBuild скопировал `cef_resources` и `Robust.Client.WebView.exe` рядом с `Robust.Client.WebView.dll` в `bin/Content.Client/`.
 
 После этого CEF сможет найти `cef_resources` и запустить браузерный subprocess.
 
