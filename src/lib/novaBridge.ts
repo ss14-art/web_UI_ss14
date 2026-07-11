@@ -274,11 +274,16 @@ class NovaBridge {
     }
 
     private sendRequest(url: string): void {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = url;
-        document.body.appendChild(iframe);
-        setTimeout(() => document.body.removeChild(iframe), 100);
+        // NOTE: deliberately NOT using a hidden <iframe> to deliver bridge
+        // requests. Creating/destroying sub-frames disrupts CEF's off-screen
+        // paint compositor (OnPaint stops firing for the main frame, the
+        // control freezes to a blank frame) until the control is resized.
+        // fetch() on the same http://webui.local/ origin reaches the native
+        // request handler without spawning a frame, so the control keeps
+        // painting. The actual bridge response arrives via the `nova:complete`
+        // / `nova:error` CustomEvents dispatched by the host through
+        // ExecuteJavaScript, so the fetch result itself is ignored.
+        void fetch(url, { method: 'GET', keepalive: true }).catch(() => {});
     }
 
     private handleComplete(requestId: string, data: string): void {
