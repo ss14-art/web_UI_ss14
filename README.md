@@ -14,6 +14,7 @@
 | [NovaBridge](./docs/04-nova-bridge.md) | Протокол связи с нативным хостом SS14 |
 | [Сборка и разработка](./docs/05-build-and-dev.md) | Запуск, сборка, конфигурация Vite |
 | [Конфигурация](./docs/06-configuration.md) | Стили, Tailwind, TypeScript |
+| [Дизайн-система](./docs/design.md) | GlassUI, компоненты, доступность и спецификация Escape Menu |
 
 ## Быстрый старт
 
