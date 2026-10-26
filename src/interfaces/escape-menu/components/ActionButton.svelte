@@ -18,10 +18,11 @@
     class="action-button"
     class:action-button--danger={action.tone === 'danger'}
     class:action-button--unread={action.badge === 'new'}
-    disabled={!action.enabled || pending}
+    class:action-button--unavailable={!action.enabled}
     title={action.tooltip ?? undefined}
+    aria-disabled={pending || !action.enabled}
     aria-busy={pendingActionId === action.id}
-    aria-label={action.badge === 'new' ? `${action.label}, ${newLabel}` : action.label}
+    aria-label={action.badge === 'new' ? `${action.label}, ${newLabel}` : action.tooltip && !action.enabled ? `${action.label}. ${action.tooltip}` : action.label}
     onclick={() => runAction(action)}
 >
     <span class="action-button__icon" aria-hidden="true">

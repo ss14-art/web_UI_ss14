@@ -18,7 +18,7 @@
             if (!active) return;
             menu = state;
             await tick();
-            document.querySelector<HTMLButtonElement>('.action-button:not(:disabled)')?.focus();
+            document.querySelector<HTMLButtonElement>('.action-button[aria-disabled="false"]')?.focus();
         }).catch(() => {
             if (active) error = 'The game menu could not be loaded.';
         });

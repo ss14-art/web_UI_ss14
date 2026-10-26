@@ -70,7 +70,7 @@ The canonical command is a semantic `<button type="button">`:
 - The label is the accessible name. Set the decorative icon to `aria-hidden="true"`; an icon alone can never name an action.
 - Default has a raised glass surface. Hover/focus brighten the surface and border; pressed uses `--ui-surface-pressed` with no layout shift.
 - `:focus-visible` is a 2 px `--ui-focus` outline with offset. Never remove focus outline.
-- A disabled meaningful action stays visible, is 55–65% opaque, dispatches nothing, and exposes a localized textual reason in tooltip/`aria-describedby`.
+- A disabled meaningful action stays visible and keyboard-focusable with `aria-disabled`, is 55–65% opaque, dispatches nothing, and exposes a localized textual reason in tooltip/accessible name.
 - Pending dispatch prevents duplicate clicks, reports busy in text/ARIA, and restores state after native response/error.
 - Danger actions are reserved for the final group. The colour intensifies on hover; confirmation remains native unless an action already uses it.
 
@@ -129,7 +129,7 @@ interface EscapeMenuState {
 3. It renders the returned state; the only allowed local state is transient `pendingActionId`.
 4. An enabled button invokes `escape-menu-action` with `{ action: id }`.
 5. C# validates the ID, executes the established native action, responds success/error, and pushes updated state when required.
-6. Escape/native close invokes `escape-menu-close`; C# closes the window and returns focus to the game.
+6. Escape from the WebUI invokes `escape-menu-close`; the native title-bar close button directly closes the window. C# returns focus to the game.
 
 The actual `src/lib/novaBridge.ts` uses same-origin `fetch` at `http://webui.local/__bridge__/…`. Older documentation that mentions a hidden `ev://` iframe is obsolete; do not implement that transport.
 Its `emit()` currently dispatches a local browser event only. Native commands use `invoke()`.
