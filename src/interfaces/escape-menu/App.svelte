@@ -1,40 +1,62 @@
 <script lang="ts">
     import { onMount, tick } from 'svelte';
     import { novaBridge } from '$lib/novaBridge';
+    import { installNativeKeys } from '$lib/nativeKeys';
     import MenuGroup from './components/MenuGroup.svelte';
     import type { EscapeMenuAction, EscapeMenuState } from './escapeMenuTypes';
 
     let menu = $state<EscapeMenuState | null>(null);
     let pendingAction = $state<string | null>(null);
     let error = $state('');
+    let active = false;
+
+    async function loadMenuState(): Promise<void> {
+        error = '';
+        try {
+            const state: EscapeMenuState = await novaBridge.invoke('escape-menu-get-state');
+            if (!active) return;
+            menu = state;
+            await tick();
+            await novaBridge.invoke('escape-menu-ready');
+            if (!active) return;
+            document.querySelector<HTMLButtonElement>('.action-button[aria-disabled="false"]')?.focus();
+        } catch {
+            if (active) error = menu?.errorLabel ?? '';
+        }
+    }
 
     onMount(() => {
-        let active = true;
+        active = true;
         const unsubscribe = novaBridge.subscribe('escape-menu-state', (state: EscapeMenuState) => {
             if (active) menu = state;
         });
 
-        void novaBridge.invoke('escape-menu-get-state').then(async (state: EscapeMenuState) => {
-            if (!active) return;
-            menu = state;
-            await tick();
-            document.querySelector<HTMLButtonElement>('.action-button[aria-disabled="false"]')?.focus();
-        }).catch(() => {
-            if (active) error = 'The game menu could not be loaded.';
-        });
+        void loadMenuState();
 
         const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Tab') {
+                const buttons = [...document.querySelectorAll<HTMLButtonElement>('button')];
+                const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
+                if (buttons.length && (event.shiftKey ? index <= 0 : index === buttons.length - 1)) {
+                    event.preventDefault();
+                    buttons[event.shiftKey ? buttons.length - 1 : 0].focus();
+                }
+                return;
+            }
             if (event.key !== 'Escape') return;
             event.preventDefault();
+            if (event.repeat) return;
             void novaBridge.invoke('escape-menu-close').catch(() => {
-                if (active) error = menu?.errorLabel ?? 'The menu could not be closed.';
+                if (active) error = menu?.errorLabel ?? '';
             });
         };
         window.addEventListener('keydown', onKeyDown);
+        const removeNativeKeys = installNativeKeys();
 
         return () => {
             active = false;
             unsubscribe();
+            removeNativeKeys();
             window.removeEventListener('keydown', onKeyDown);
         };
     });
@@ -44,9 +66,10 @@
         pendingAction = action.id;
         error = '';
         try {
-            await novaBridge.invoke('escape-menu-action', { action: action.id });
+            const result = await novaBridge.invoke('escape-menu-action', { action: action.id });
+            if (active && result.closeMenu) await novaBridge.invoke('escape-menu-close');
         } catch {
-            error = menu?.errorLabel ?? 'The action could not be completed.';
+            if (active) error = menu?.errorLabel ?? '';
         } finally {
             pendingAction = null;
         }
@@ -62,10 +85,10 @@
                 {/if}
             {/each}
         </nav>
-    {:else}
-        <p class="menu-loading" role="status">Loading…</p>
     {/if}
     {#if error}
-        <p class="menu-error" role="alert">{error}</p>
+        <div class="menu-error" role="alert">{error}
+            <button type="button" class="menu-retry" onclick={loadMenuState}>{menu?.retryLabel}</button>
+        </div>
     {/if}
 </main>

@@ -20,5 +20,6 @@ export interface EscapeMenuState {
     newLabel: string;
     pendingLabel: string;
     errorLabel: string;
+    retryLabel: string;
     groups: EscapeMenuGroup[];
 }

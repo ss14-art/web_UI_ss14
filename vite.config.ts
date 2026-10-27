@@ -118,7 +118,7 @@ export default defineConfig(async (): Promise<UserConfig> => {
             },
             chunkSizeWarningLimit: 500,
             assetsInlineLimit: 4096,
-            cssCodeSplit: false,
+            cssCodeSplit: true,
             sourcemap: false,
             reportCompressedSize: false
         },
