@@ -1,5 +1,87 @@
 # WebUI design system
 
+## DOOM arcade: approved themed exception
+
+### GBA / FireRed
+
+`FireRedArcade` reuses the existing powered cabinet BUI, with a fixed 752x590
+content surface and local EmulatorJS 4.2.3/mGBA in `public/arcade/firered`.
+Build Vite before packaging: public files become Resources/dist and are copied
+into the client resource archive by the existing resource packaging pipeline.
+The player's launcher obtains that archive; CEF requests the ROM/core through
+http://webui.local/dist/arcade/firered, not a developer's Windows path.
+The server only authorizes opening/closing the BUI. CPU, audio and game state are
+client-local, independent for each player, with no score/reward messages or netplay.
+Cartridge SRAM is persisted in the client's UserData under `/ArcadeSaves/`, not on
+the server and not in IndexedDB/localStorage. The parent Svelte page loads the save
+through `firered-save-load` before allowing the iframe to boot EmulatorJS. The iframe
+uses `gameManager.getSaveFile()` to snapshot current SRAM every 60 seconds and sends
+it to the parent with same-origin `postMessage`; the parent stores it through the
+NovaBridge `firered-save-write` request. The in-page Close action in the cabinet footer
+asks for an immediate flush and waits up to five seconds for an acknowledgement.
+The native window X/process termination cannot await JavaScript, so the last completed
+minute checkpoint is the recovery point in those cases. Writes use unique temporary
+files renamed to immutable generations; the three newest complete saves are retained,
+and load falls back to an older valid generation. Payloads are limited to 1 MiB.
+This is per-client-install storage: it survives game/window/client restarts, but does
+not roam between computers or accounts. No BIOS download, CDN runtime dependency,
+SharedArrayBuffer or engine changes are required. Use `invoke` for native requests;
+`window.fs` and native transport through `emit` do not exist here. Native CEF testing
+and a packaged-client restart/resume smoke test remain necessary before deployment.
+
+### Fixed cabinet geometry
+
+All arcade windows disable user resizing, but remain movable by their native header.
+Preferred content sizes in logical UI units: DOOM 840x700, Asteroids 840x660,
+Flappy Bird 400x650, Pac-Man 520x720, Prince of Persia 840x640, Snake/Invaders 800x660.
+Native chrome is measured separately. On a smaller viewport the content is uniformly
+scaled down to fit with a 16-unit edge allowance; UI scale is not applied twice.
+The DOOM canvas is absolutely contained in its screen so its intrinsic buffer cannot
+expand the grid or crop the HUD. Letterboxing is preferable to clipped gameplay.
+
+Nu, pogodi! uses a 936x607 content surface (or uniform downscale), not an arbitrary
+1000x700 rectangle. Its iframe opens immediately, with no themed bezel, start overlay
+or web footer during gameplay. The original Game A/B buttons remain part of the game;
+the native close button remains available. The original handheld art is contain-fit.
+Assets are local; no remote font is required. See the provenance warning in the pack README.
+
+### Six classic cabinets
+
+The `arcade` entry renders a host-selected game, never a user-supplied URL.
+Asteroids uses a white vector/starfield theme; Flappy Bird uses sky/pipe colours;
+Pac-Man uses blue maze borders and yellow accents; Prince of Persia uses an arched
+gold/burgundy frame; Snake uses an olive LCD palette; Space Invaders uses black/green.
+Each has a separate entity and circuit board, inheriting the existing cabinet's
+power, wiring and BUI lifetime. The native window and deferred bridge dispatch are
+shared with DOOM. Existing DOOM IDs and behaviour remain compatible.
+
+Game files live in `public/arcade`, copied by Vite to generated `Resources/dist`.
+Each legacy game runs in an iframe to isolate its globals from Svelte. This is
+not a security boundary against malicious same-origin code: the shipped scripts
+are trusted content. CSP disallows external resource loading; CEF only permits
+the selected game's exact index URL and the shell URL for navigation. Native
+bridge actions stay allowlisted. No score or reward crosses to the server.
+An adapter normalizes CEF virtual keys, releases held keys on blur and reports
+page load/errors to the shell. Destroying the frame stops game audio and timers.
+Space Invaders additionally exposes its existing Play click as Enter.
+
+Pac-Man's Modernizr, jQuery and both audio formats are local. No CDN is required.
+Keep the source notices and `public/arcade/README.md` provenance caveats; do not
+represent the supplied pack as license-cleared for public distribution.
+Browser smoke checks: `scripts/verify-classic-arcades.js` uses a mock bridge and
+checks all seven local pages, game surfaces at preferred/reduced sizes, keyboard start
+and network errors. `scripts/verify-doom-layout.js` loads the real local WASM and
+checks canvas containment at three viewport sizes through the same preview server.
+Native CEF power/range closure, input and reopen remain a separate manual gate.
+
+The arcade uses classic DOOM-inspired metal rather than shared GlassUI:
+graphite, warm ivory text, square bevelled buttons, oxide-red actions and amber
+keyboard focus. Decoration is original CSS without imported fonts or artwork.
+The typographic DOOM mark appears only before gameplay, not as a second title
+bar. Native window chrome stays game-owned. No filters obscure the game canvas.
+The localized footer wraps at small sizes. Font Awesome, 40px targets and reduced
+motion remain supported. This theme does not change WASM, bridge or keyboard-only input.
+
 This is the design contract for WebUI interfaces embedded in the Arcane SS14 client. The native client remains the source of truth for behaviour, permissions, state, and localization; the web page renders that state and requests actions.
 
 ## Principles

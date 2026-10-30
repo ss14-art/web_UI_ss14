@@ -168,7 +168,8 @@ class NovaBridge {
     private sendChunkedRequest(eventType: string, requestId: string, data: string) {
         const chunkId = this.generateChunkId();
         const encodedData = this.safeBtoa(data);
-        const chunks = this.splitIntoChunks(encodedData, 1500);
+        const chunkSize = eventType === 'firered-save-write' ? 9000 : 1500;
+        const chunks = this.splitIntoChunks(encodedData, chunkSize);
 
         chunks.forEach((chunk, index) => {
             setTimeout(() => {

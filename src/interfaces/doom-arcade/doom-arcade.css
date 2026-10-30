@@ -1,0 +1,71 @@
+:root { font: 14px/1.45 Arial, Helvetica, sans-serif; color: #e7dfcc; background: #1b1917; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+.doom-shell {
+    height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px;
+    background: repeating-linear-gradient(0deg, #ffffff02 0 1px, transparent 1px 4px), linear-gradient(120deg, #3c3933, #242320 40%, #151514);
+    border: 1px solid #625c50; box-shadow: inset 2px 2px #ffffff12, inset -2px -2px #0009;
+}
+.game-screen {
+    position: relative; flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden;
+    background: #050504; border: 4px solid #111110; outline: 1px solid #676054; box-shadow: 0 2px 0 #ffffff18;
+}
+/* Intrinsic WASM canvas dimensions must never contribute to the grid's minimum size. */
+canvas { position: absolute; inset: 0; display: block; width: 100% !important; height: 100% !important; object-fit: contain; image-rendering: pixelated; background: black; }
+.overlay {
+    position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center;
+    background: radial-gradient(ellipse at 50% 90%, #6f201637, transparent 65%), linear-gradient(135deg, #24211c, #0d0d0b 65%);
+}
+.overlay::before, .overlay::after {
+    content: ''; position: absolute; left: 18px; right: 18px; height: 5px; pointer-events: none;
+    background: repeating-linear-gradient(135deg, #8b703a 0 8px, #25221b 8px 16px); opacity: .55;
+}
+.overlay::before { top: 14px; }
+.overlay::after { bottom: 14px; }
+.doom-mark {
+    flex: none; font: 900 clamp(52px, 13vw, 108px)/1 Impact, 'Arial Black', sans-serif;
+    letter-spacing: -.045em; padding: 0 12px 10px; color: #c1b39a;
+    background: linear-gradient(#eee3c6 15%, #a59d89 42%, #655c4d 47%, #c98948 65%, #7c3123 95%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(3px 5px 0 #000) drop-shadow(0 1px 0 #8a7255);
+}
+.overlay p { margin: 0 0 10px; max-width: 42ch; color: #c5bda9; }
+button {
+    min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 9px 18px; font: 700 14px/1.3 Arial, Helvetica, sans-serif; color: #e7dfcc; cursor: pointer;
+    border: 1px solid #6e6759; border-radius: 0; background: linear-gradient(#45413a, #282622);
+    box-shadow: inset 1px 1px #ffffff1c, inset -1px -1px #0008, 0 2px 0 #0009;
+    transition: border-color 120ms ease, color 120ms ease;
+}
+button:hover { color: #fff2d8; border-color: #c1a777; background: linear-gradient(#575044, #363027); }
+button:active { background: #211e19; box-shadow: inset 1px 2px 3px #0009; }
+button:focus-visible, canvas:focus-visible { outline: 2px solid #f3be72; outline-offset: -3px; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.overlay button { min-width: min(240px, 100%); max-width: 100%; flex-shrink: 0; }
+button.primary, .toolbar button { border-color: #a44b36; background: linear-gradient(#85291f, #4a1714); color: #ffdfbd; }
+button.primary { min-height: 48px; font-size: 17px; }
+button.primary:hover, .toolbar button:hover { border-color: #e7a26b; background: linear-gradient(#a43827, #652019); }
+button.primary:active, .toolbar button:active { background: #411310; }
+button[aria-pressed='true'] { color: #b0a594; background: #211f1b; }
+svg { width: 17px; height: 17px; flex: none; }
+.toolbar {
+    flex: none; min-height: 54px; display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; padding: 6px 8px 6px 14px; border: 1px solid #635c4f; border-top: 3px solid #7e3326;
+    background: linear-gradient(#38352f, #24221e); box-shadow: inset 1px 1px #ffffff0d, 0 2px 0 #0007;
+}
+.toolbar > span { color: #c8beaa; font-size: 12px; line-height: 1.6; }
+.toolbar button { flex: none; max-width: 50%; }
+@media (max-width: 600px) {
+    .doom-shell { gap: 6px; padding: 8px; }
+    .toolbar { gap: 8px; padding-left: 8px; }
+    .toolbar button { padding: 8px 10px; }
+}
+@media (max-height: 450px) {
+    .doom-shell { padding: 6px; gap: 5px; }
+    .overlay { gap: 8px; padding: 22px 16px; }
+    .doom-mark { font-size: 52px; padding-bottom: 2px; }
+    .overlay p { margin-bottom: 0; }
+    .toolbar { min-height: 48px; padding-top: 3px; padding-bottom: 3px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

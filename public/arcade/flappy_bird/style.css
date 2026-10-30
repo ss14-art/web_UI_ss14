@@ -1,0 +1,50 @@
+* {
+    font-family: helvetica, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+}
+
+/********************
+* video game screen *
+********************/
+.game-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    background-color: black;
+    aspect-ratio: 3 / 5;
+    width: min(100vw, calc(100vh * 3 / 5));
+    height: auto;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    canvas {
+        width: min(100vw, calc(100dvh * 3 / 5));
+        max-height: 100dvh;
+    }
+}

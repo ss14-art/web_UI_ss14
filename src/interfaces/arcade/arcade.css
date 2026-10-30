@@ -1,0 +1,41 @@
+:root { font: 14px/1.5 Arial, sans-serif; color: #eee; background: #111; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+.cabinet { --accent: #c6e5ff; --edge: #52616b; --panel: #171e25; --ink: #080d12; display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 12px; background: linear-gradient(135deg, var(--panel), var(--ink)); border: 2px solid var(--edge); box-shadow: inset 0 0 0 2px #0008; }
+.screen { flex: 1; min-height: 0; position: relative; background: #000; border: 2px solid var(--edge); box-shadow: 0 2px 0 #fff2, inset 0 0 20px #000; overflow: hidden; }
+iframe { width: 100%; height: 100%; border: 0; display: block; }
+[data-game='firered'] { --accent: #ffe4a6; --edge: #b75636; --panel: #542921; --ink: #1e1112; }
+[data-game='nu_pogodi'].cabinet { padding: 0; gap: 0; border: 0; background: #000; box-shadow: none; }
+[data-game='nu_pogodi'] .screen { border: 0; box-shadow: none; }
+.marquee { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; overflow: auto; text-align: center; background: radial-gradient(ellipse at top, var(--panel), var(--ink) 75%); }
+h1 { margin: 0; color: var(--accent); font: 900 clamp(28px, 6vw, 64px)/1.1 'Arial Black', Arial, sans-serif; letter-spacing: .03em; text-shadow: 3px 4px #000; }
+p { margin: 0; color: #e5e0d3; }
+.ornament { width: 68px; height: 68px; border: 2px solid var(--accent); transform: rotate(45deg); margin-bottom: 12px; box-shadow: inset 0 0 0 8px var(--ink); }
+button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 42px; padding: 10px 18px; color: var(--accent); background: var(--panel); border: 2px solid var(--edge); font: bold 14px Arial, sans-serif; cursor: pointer; box-shadow: inset 0 1px #fff3, 0 2px #000; }
+.marquee button { min-width: 200px; }
+button:hover { border-color: var(--accent); background: var(--ink); }
+button:active { box-shadow: inset 0 2px 4px #000; }
+button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+svg { width: 18px; height: 18px; flex: none; }
+footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; background: var(--ink); border: 1px solid var(--edge); }
+footer > span { font-size: 12px; color: #e0dccc; }
+footer button { flex: none; max-width: 50%; }
+[data-game='asteroids'] .marquee { background: radial-gradient(circle at 20% 25%, #fff 0 1px, transparent 2px), radial-gradient(circle at 75% 65%, #fff 0 1px, transparent 2px), #06090d; background-size: 113px 137px, 179px 163px, auto; }
+[data-game='asteroids'] .ornament { clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%); background: #d0e8ff; transform: none; }
+[data-game='flappy_bird'] { --accent: #ffe69a; --edge: #639342; --panel: #306c65; --ink: #163f3e; border-radius: 8px; }
+[data-game='flappy_bird'] .marquee { background: linear-gradient(#367e98, #64b6b1 75%, #a9c55b 75%, #526829 79%, #d4bf80 79%); }
+[data-game='flappy_bird'] .ornament { border-radius: 50%; background: #e9c64d; border: 4px solid #6d5122; transform: none; box-shadow: 5px 5px #0004; }
+[data-game='pacman'] { --accent: #ffe530; --edge: #354bea; --panel: #11164a; --ink: #030412; }
+[data-game='pacman'] .marquee { border: 5px double #354bea; border-radius: 18px; }
+[data-game='pacman'] .ornament { border: none; border-radius: 50%; background: #ffe530; clip-path: polygon(0 0, 100% 0, 100% 18%, 50% 50%, 100% 82%, 100% 100%, 0 100%); transform: none; box-shadow: none; }
+[data-game='prince_of_persia'] { --accent: #f6d08a; --edge: #9a7541; --panel: #492b35; --ink: #20151b; }
+[data-game='prince_of_persia'] .marquee { border-radius: 45% 45% 0 0; border: 7px double #9a7541; background: radial-gradient(ellipse at top, #66374b, #20151b 70%); }
+[data-game='prince_of_persia'] h1 { font-family: Georgia, serif; font-weight: 700; }
+[data-game='snake_game'] { --accent: #c8e283; --edge: #72844d; --panel: #35402a; --ink: #172218; }
+[data-game='snake_game'] .marquee { background: repeating-linear-gradient(0deg, #0001 0 1px, transparent 1px 5px), #253521; }
+[data-game='snake_game'] h1 { font-family: 'Courier New', monospace; }
+[data-game='snake_game'] .ornament { transform: none; border-width: 12px; border-right-color: transparent; }
+[data-game='space_Invaders'] { --accent: #8eff69; --edge: #386b39; --panel: #122c20; --ink: #030a08; }
+[data-game='space_Invaders'] h1 { font-family: 'Courier New', monospace; text-transform: uppercase; }
+[data-game='space_Invaders'] .ornament { transform: none; background: #8eff69; border: 0; box-shadow: none; clip-path: polygon(20% 0, 30% 0, 30% 20%, 70% 20%, 70% 0, 80% 0, 80% 30%, 100% 30%, 100% 80%, 80% 80%, 80% 60%, 20% 60%, 20% 80%, 0 80%, 0 30%, 20% 30%); }
+@media(max-height: 450px) { .cabinet { padding: 6px; gap: 6px; } .marquee { gap: 8px; padding: 12px; } .ornament { width: 36px; height: 36px; margin-bottom: 0; } h1 { font-size: 30px; } }

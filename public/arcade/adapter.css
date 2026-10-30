@@ -1,0 +1,5 @@
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+body { background: #000; }
+/* Fixed-resolution legacy Asteroids: fit the surface, not its simulation coordinates. */
+#game-container { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+#game-container > canvas { width: min(100vw, calc(100vh * 780 / 540)); height: auto; max-height: 100vh; object-fit: contain; }
